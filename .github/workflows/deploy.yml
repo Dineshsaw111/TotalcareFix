@@ -21,7 +21,8 @@ jobs:
         run: mvn -N io.takari:maven:wrapper
  
       - name: Change directory to project
-        run: cd TotalcareFix
+        run: cd TotalcareFix/totalcarefix
+        working-directory: ${{ github.workspace }}
  
       - name: Build Spring Boot application
         run: |
