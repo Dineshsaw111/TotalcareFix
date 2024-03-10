@@ -24,25 +24,25 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw package -DskipTests
- 
+
       - name: Copy JAR file to EC2
         uses: appleboy/scp-action@master
         with:
           host: 34.242.206.146
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-            
           source: 'target/totalcarefix-0.0.1-SNAPSHOT.jar'
           target: '/home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar'
- 
-      - name: SSH into EC2 and deploy
-        uses: appleboy/ssh-action@master
+
+      - name: Install Ansible and dependencies
+        run: |
+          pip install ansible
+          ansible-galaxy collection install community.general
+
+      - name: Run Ansible playbook for deployment
+        uses: ansible/ansible-runner@v2
         with:
-          host: 34.242.206.146
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          timeout: 5m
-          script: |
-            cd totalcarefix-0.0.1-SNAPSHOT.jar/target
-            java -jar totalcarefix-0.0.1-SNAPSHOT.jar
-        
+          command: playbook
+          playbook: ansible/deploy.yml
+          inventory: 34.242.206.146
+          private_key: ${{ secrets.SSH_PRIVATE_KEY }}
