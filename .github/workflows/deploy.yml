@@ -18,7 +18,7 @@ jobs:
           java-version: '21'
 
       - name: Navigate to project directory
-        run: cd "filesystem:./"
+        run: "filesystem:./"
 
       - name: Set up Maven Wrapper
         run: mvn -N io.takari:maven:wrapper
