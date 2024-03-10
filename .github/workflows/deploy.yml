@@ -18,7 +18,7 @@ jobs:
           java-version: '21'
 
       - name: Build Spring Boot application
-        run: mvn package
+        run: mvn clean package
 
       - name: Copy JAR file to EC2
         uses: appleboy/scp-action@master
