@@ -24,24 +24,32 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw package -DskipTests
- 
+
       - name: Copy JAR file to EC2
         uses: appleboy/scp-action@master
         with:
           host: 34.242.206.146
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-            
           source: 'target/totalcarefix-0.0.1-SNAPSHOT.jar'
           target: '/home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar'
- 
-      - name: SSH into EC2 and deploy
+
+      - name: Stop existing Java process
         uses: appleboy/ssh-action@master
         with:
           host: 34.242.206.146
           username: ec2-user
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar/target
+            pkill -f totalcarefix-0.0.1-SNAPSHOT.jar
+
+      - name: Start new Java process
+        uses: appleboy/ssh-action@master
+        with:
+          host: 34.242.206.146
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ec2-user
             nohup java -jar totalcarefix-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
             echo "Java process started."
