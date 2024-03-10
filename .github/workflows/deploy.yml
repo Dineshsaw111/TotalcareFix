@@ -21,7 +21,7 @@ jobs:
         run: mvn -N io.takari:maven:wrapper
 
       - name: Navigate to project directory
-        run: filesystem:.\TotalcareFix\totalcarefix\
+        run: filesystem:./TotalcareFix/totalcarefix/
 
       - name: Build Spring Boot application
         run: |
