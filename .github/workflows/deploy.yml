@@ -18,7 +18,9 @@ jobs:
           java-version: '21'
  
       - name: Build Spring Boot application
-        run: ./mvnw package -DskipTests
+        run: |
+          chmod +x mvnw
+          ./mvnw package -DskipTests
  
       - name: Copy JAR file to EC2
         uses: appleboy/scp-action@master
