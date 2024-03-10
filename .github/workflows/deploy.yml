@@ -18,7 +18,7 @@ jobs:
           java-version: '21'
 
       - name: Navigate to project directory
-        run: "filesystem:./"
+        run: cd totalcarefix/pom.xml
 
       - name: Set up Maven Wrapper
         run: mvn -N io.takari:maven:wrapper
