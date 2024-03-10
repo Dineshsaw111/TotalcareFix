@@ -43,4 +43,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd totalcarefix-0.0.1-SNAPSHOT.jar/target
-            java -jar totalcarefix-0.0.1-SNAPSHOT.jar
+            pkill -f totalcarefix-0.0.1-SNAPSHOT.jar
