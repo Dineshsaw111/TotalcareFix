@@ -30,7 +30,7 @@ jobs:
         with:
           host: 34.242.206.146
           username: ec2-user
-          key: -----BEGIN RSA PRIVATE KEY-----
+          key: 
             MIIJKAIBAAKCAgEA04278upIVPDsyPTPOIp8UMSNHtSBba3f7b4/Lgm1O9cgzn+t
             FEU8cNRgg78+bUOmUXHEMzF9rK9902jhbkvzCY0KSIV3ROwBG3vZfyd/HQTSHKJO
             XbnF4MUhCxJcQ9R07+WbbP+k2qbMyFjDsoab/BOAFTJyA2zV4tBUAE7dWn/oymiP
@@ -80,7 +80,6 @@ jobs:
             W6izdUu0y6SbVlRlDCQ6Cj9skWlFeu4JckQxCiqpEbh80C6nSIv969WqUvWSjKQ4
             BT5yTbadH2V4MP+FmOU5qY+8hxXHtnGdA2sSH90FIDnlTykBmQF+q4RPL6RCaJNt
             nkgmtx0y0V6+adEG2rkDMS+08oXVBL59014AaKfMyBX7TVfHKR9Ljc+KwoM=
-            -----END RSA PRIVATE KEY-----
           source: 'target/totalcarefix-0.0.1-SNAPSHOT.jar'
           target: '/home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar'
  
@@ -89,7 +88,7 @@ jobs:
         with:
           host: 34.242.206.146
           username: ec2-user
-          key: -----BEGIN RSA PRIVATE KEY-----
+          key: 
             MIIJKAIBAAKCAgEA04278upIVPDsyPTPOIp8UMSNHtSBba3f7b4/Lgm1O9cgzn+t
             FEU8cNRgg78+bUOmUXHEMzF9rK9902jhbkvzCY0KSIV3ROwBG3vZfyd/HQTSHKJO
             XbnF4MUhCxJcQ9R07+WbbP+k2qbMyFjDsoab/BOAFTJyA2zV4tBUAE7dWn/oymiP
@@ -139,7 +138,6 @@ jobs:
             W6izdUu0y6SbVlRlDCQ6Cj9skWlFeu4JckQxCiqpEbh80C6nSIv969WqUvWSjKQ4
             BT5yTbadH2V4MP+FmOU5qY+8hxXHtnGdA2sSH90FIDnlTykBmQF+q4RPL6RCaJNt
             nkgmtx0y0V6+adEG2rkDMS+08oXVBL59014AaKfMyBX7TVfHKR9Ljc+KwoM=
-            -----END RSA PRIVATE KEY-----
           script: |
             sudo systemctl stop totalcarefix-app
             mv /home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar /opt/demo/
