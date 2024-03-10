@@ -10,6 +10,6 @@ public class HomeController {
     @ResponseBody
     public String home()
     {
-        return "Welcome To our Website TotalCareFix 1";
+        return "Welcome To our Website TotalCareFix";
     }
 }
