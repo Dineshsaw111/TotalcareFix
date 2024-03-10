@@ -17,6 +17,9 @@ jobs:
         with:
           java-version: '21'
  
+      - name: Set up Maven Wrapper
+        run: mvn -N io.takari:maven:wrapper
+
       - name: Build Spring Boot application
         run: |
           chmod +x mvnw
