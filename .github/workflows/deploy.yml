@@ -43,5 +43,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             sudo systemctl stop totalcarefix-app
-            mv /home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar /opt/demo/
+            mv /home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar /opt/demo/cd /opt/demo/
             sudo systemctl start totalcarefix-app
