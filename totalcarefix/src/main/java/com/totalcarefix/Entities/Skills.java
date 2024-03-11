@@ -1,19 +1,21 @@
 package com.totalcarefix.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Entity 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class roles {
+@Table(name = "skills")
+public class Skills {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int role_id;
+    private int skill_id;
+
     private String name;
+
+
 }

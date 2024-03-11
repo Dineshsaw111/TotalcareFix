@@ -6,14 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity 
+@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class roles {
+@Table(name = "states")
+public class States {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int role_id;
+    private int state_id;
     private String name;
 }

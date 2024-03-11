@@ -4,7 +4,6 @@ package com.totalcarefix.Services;
 import com.totalcarefix.DTO.requestRolesDTO;
 import com.totalcarefix.Entities.roles;
 import com.totalcarefix.Repos.rolesRepo;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +35,7 @@ public class rolesServiceTest {
     }
 
     @Test
-    void addUnitTest2(){
+    void addUnitTest_withNullObject(){
         requestRolesDTO dto1=new requestRolesDTO(null);
         roles role= roles.builder()
                 .name(dto1.getName())
