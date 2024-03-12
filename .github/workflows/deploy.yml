@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,20 +23,28 @@ jobs:
       - name: Build Spring Boot application
         run: |
           chmod +x mvnw
-          ./mvnw package
- 
-      - name: Stop old running server
-        uses: appleboy/ssh-action@master
+          ./mvnw package -DskipTests
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v1
         with:
-          host: 34.242.206.146
-          username: ec2-user
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/ec2-user/totalcarefix-0.0.1-SNAPSHOT.jar/target
-            nohup pkill -f totalcarefix-0.0.1-SNAPSHOT.jar > output.log 2>&1 &
-            echo "Java process stopped."
+          java-version: '21'
 
+      - name: Run tests
+        run: |
+          # Add commands to run your tests here
 
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
       - name: Copy JAR file to EC2
         uses: appleboy/scp-action@master
         with:
