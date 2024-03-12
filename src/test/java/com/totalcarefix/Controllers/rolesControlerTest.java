@@ -19,7 +19,7 @@ public class rolesControlerTest {
     @LocalServerPort
     private int port;
 
-    private  String baseeUrl="http://34.242.206.146";
+    private  String baseeUrl="http://localhost";
 
     private static RestTemplate restTemplate;
 
