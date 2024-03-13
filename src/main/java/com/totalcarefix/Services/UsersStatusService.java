@@ -18,21 +18,24 @@ public class UsersStatusService {
 
     public  String addUsersStatus(RequestUsersStatus requestUsersStatus){
         String CheckNull=requestUsersStatus.getName();
-        if(CheckNull==null){
-           return "null object";
+        if(requestUsersStatus.getName().isEmpty()){
+
+            return "null object";
         }
         else {
             List<UsersStatus> mylist=new ArrayList<>();
             usersStatusRepo.findAll().forEach(mylist::add);
             for (UsersStatus obj :mylist){
                 if(obj.getName().equals(CheckNull)){
-                    return "Already exist"+CheckNull;
+                   // System.out.println("hii");
+                    return "Already exist";
                 }
             }
             UsersStatus user1=UsersStatus.builder().name(requestUsersStatus.getName()).build();
             usersStatusRepo.save(user1);
 
             return "added"+CheckNull;
+
         }
     }
     public List<UsersStatus> getAllUsersStatus(){
@@ -45,5 +48,21 @@ public class UsersStatusService {
         Optional<UsersStatus> userStatus= usersStatusRepo.findById(id);
         return userStatus.orElseGet(() -> new UsersStatus(0, null));
         }
+
+
+    public boolean deleteUserStatus(int id){
+        boolean check=false;
+        check=usersStatusRepo.existsById(id);
+        if(check){
+            usersStatusRepo.deleteById(id);
+            return check;
+        }
+        else{
+            return false;
+        }
+      }
+
     }
+
+
 

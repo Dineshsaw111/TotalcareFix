@@ -1,20 +1,20 @@
 package com.totalcarefix.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "states")
-public class States {
+@Table(name = "cities")
+public class Cities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int city_id;
     private int state_id;
     private String name;
+
 }
