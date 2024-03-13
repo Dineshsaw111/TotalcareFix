@@ -17,8 +17,16 @@ public class rolesService {
     rolesRepo rolesrepo;
 
     public boolean roleAdd(requestRolesDTO rolesdto){
+        String name=rolesdto.getName();
+        List<roles> list=new ArrayList<>();
+        rolesrepo.findAll().forEach(list::add);
+        for(roles data : list){
+            if(data.getName().equals(name)){
+                return false;
+            }
+        }
         boolean check=false;
-        if(rolesdto.getName()!=null){
+        if(!rolesdto.getName().isEmpty()){
             roles role= roles.builder()
                     .name(rolesdto.getName())
                     .build();

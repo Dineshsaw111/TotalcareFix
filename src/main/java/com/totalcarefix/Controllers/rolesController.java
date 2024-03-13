@@ -23,17 +23,17 @@ public class rolesController {
             return new ResponseEntity<>("one role added", HttpStatus.CREATED);
         }
         else{
-            return new ResponseEntity<>("role already there", HttpStatus.MULTI_STATUS);
+            return new ResponseEntity<>("can not accept null and empty and same data again", HttpStatus.OK);
         }
     }
    @DeleteMapping("/deleteRole/{id}")
     public ResponseEntity<String> deleteRole(@PathVariable int id){
     boolean check=roleservice.roleDelete(id);
     if(check){
-        return new ResponseEntity<>("one role added", HttpStatus.CREATED);
+        return new ResponseEntity<>("one role deleted", HttpStatus.CREATED);
     }
     else{
-        return new ResponseEntity<>("role already there", HttpStatus.MULTI_STATUS);
+        return new ResponseEntity<>("role not exist", HttpStatus.MULTI_STATUS);
     }
     }
   @GetMapping("/getAllRoles")
