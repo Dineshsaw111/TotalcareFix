@@ -8,7 +8,7 @@ public class TotalcarefixApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TotalcarefixApplication.class, args);
-		System.out.println("hellow");
+		System.out.println("Server is running on port number 8080");
 	}
 
 }

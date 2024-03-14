@@ -115,13 +115,18 @@ public class UsersService {
                     skillid=obj.getSkill_id();
                 }
             }
+            if(("Technician").equals(newRequestUser.getUsertype())){
 
-        Technicians tech1= Technicians.builder()
-                .tech_id(userid)
-                .skill_id(skillid)
-                .build();
-            techniciansRepo.save(tech1);
-            System.out.println("hi2");
+                Technicians tech1= Technicians.builder()
+                        .tech_id(userid)
+                        .skill_id(skillid ).build();
+                System.out.println(userid);
+                System.out.println(skillid);
+
+                techniciansRepo.save(tech1);
+                System.out.println("hi2");
+            }
+
             return "added";
 
         }
