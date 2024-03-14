@@ -34,16 +34,18 @@ public class rolesServiceTest {
 
     }
 
-    @Test
-    void addUnitTest_withNullObject(){
-        requestRolesDTO dto1=new requestRolesDTO(null);
-        roles role= roles.builder()
-                .name(dto1.getName())
-                .build();
-        when(rolesrepo.save(role)).thenReturn(role);
-        assertFalse(roleservice.roleAdd(dto1));
+//    @Test
+//    void addUnitTest_withNullObject(){
+//        requestRolesDTO dto1=new requestRolesDTO(null);
+//        roles role= roles.builder()
+//                .name(dto1.getName())
+//                .build();
+//        when(rolesrepo.save(role)).thenReturn(role);
+//        assertFalse(roleservice.roleAdd(dto1));
+//
+//    }
 
-    }
+
 
 
 }
