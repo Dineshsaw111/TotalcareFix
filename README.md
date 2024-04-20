@@ -20,7 +20,7 @@
   ## Booking Process
    ### 1.	User Requests Service:
    #### •	Users can browse through available skills.
-   #### •	Users can book a apponitment for a specific service by providing details like service date, time, and address.
+   #### •	Users can book an apponitment for a specific service by providing details like service date, time, and address.
 
    ### 2.	Technician Accepts Booking:
    #### •	Technicians receive booking requests and can accept or decline them based on their availability.
