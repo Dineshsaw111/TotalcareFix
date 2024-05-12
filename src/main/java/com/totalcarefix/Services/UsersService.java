@@ -199,7 +199,7 @@ public class UsersService {
                         .time(booking.getExpectedTime())
                         .status(status.getName())
                         .build();
-                if(id==booking.getBookerId() && booking.getBookerId()!=3){
+                if(id==booking.getBookerId() && booking.getStatusId()!=3){
                     userBookingResponses.add(userBookingResponse);
                 }
 
