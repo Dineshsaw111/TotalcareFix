@@ -252,6 +252,23 @@ public class UsersService {
                 .address_type("fixed")
                 .build();
         addressesRepo.save(address);
+
+        int skillid=0;
+        List<Skills> skillist=new ArrayList<>();
+        skillsRepo.findAll().forEach(skillist::add);
+        for (Skills obj :skillist){
+            if(obj.getName().equals(registerRequest.getSkill())){
+                skillid=obj.getSkill_id();
+            }
+        }
+
+        if(("Technician").equals(registerRequest.getRole())){
+            Technicians tech1= Technicians.builder()
+                    .tech_id(user.getUser_id())
+                    .skill_id(skillid ).build();
+            techniciansRepo.save(tech1);
+        }
+
         return new ResponseEntity<>(registerRequest, HttpStatus.OK);
     }
 }

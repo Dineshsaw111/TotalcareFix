@@ -19,4 +19,5 @@ public class RegisterRequest {
     private String city;
     private String pincode;
     private String contact;
+    private String skill;
 }
