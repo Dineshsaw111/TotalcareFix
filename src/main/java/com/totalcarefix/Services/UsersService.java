@@ -199,7 +199,7 @@ public class UsersService {
                         .time(booking.getExpectedTime())
                         .status(status.getName())
                         .build();
-                if(id==booking.getBookerId()){
+                if(id==booking.getBookerId() && booking.getBookerId()!=3){
                     userBookingResponses.add(userBookingResponse);
                 }
 
@@ -295,7 +295,11 @@ public class UsersService {
         return new ResponseEntity<>(registerRequest, HttpStatus.OK);
     }
 
-//    public Optional<Integer> getAddressIdByUserId(int userId) {
-//        return addressesRepo.findAddressIdByUserId(userId);
-//    }
+
+    public ResponseEntity<String> cancelBook(int bookId) {
+        Booking booking=bookingRepo.findById(bookId).get();
+        booking.setStatusId(3);
+        bookingRepo.save(booking);
+        return new ResponseEntity<>("updated",HttpStatus.OK);
+    }
 }

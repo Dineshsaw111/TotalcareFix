@@ -39,4 +39,9 @@ public class UserController {
     public ResponseEntity<RegisterRequest> register(@RequestBody RegisterRequest registerRequest){
         return usersService.registerUser(registerRequest);
     }
+
+    @PostMapping("/cancel/{bookId}")
+    public ResponseEntity<String> cancel(@PathVariable int bookId){
+        return usersService.cancelBook(bookId);
+    }
 }
