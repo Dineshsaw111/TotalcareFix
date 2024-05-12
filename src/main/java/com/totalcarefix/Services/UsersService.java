@@ -147,15 +147,25 @@ public class UsersService {
     public ResponseEntity<UserBookingResponse> techBooking(UserBookingRequest userBookingRequest){
         Optional<Users> optionalUsers = Optional.ofNullable(usersRepo.findByEmail(userBookingRequest.getEmail()));
         Users users = optionalUsers.orElse(null);
+        int addId=0;
+        List<Addresses> addressesArrayList=new ArrayList<>();
+        addressesRepo.findAll().forEach(addressesArrayList::add);
+        for (Addresses addresses :addressesArrayList){
+            if(addresses.getUser_id()==(users.getUser_id())){
+                addId=addresses.getAddress_id();
+            }
+        }
 
         Booking booking=Booking.builder()
-                .bookingId(users.getUser_id())
+                .bookerId(users.getUser_id())
                 .statusId(1)
                 .message(userBookingRequest.getMessage())
                 .serviceDate(userBookingRequest.getServiceDate())
                 .expectedTime(userBookingRequest.getTime())
+                .addressId(addId)
+                .logtime(Timestamp.from(Instant.now()))
                 .build();
-       booking= bookingRepo.save(booking);
+           booking= bookingRepo.save(booking);
 
         Status status=statusRepo.findById(1).get();
         UserBookingResponse userBookingResponse=UserBookingResponse.builder()
@@ -163,9 +173,12 @@ public class UsersService {
                 .date(userBookingRequest.getServiceDate())
                 .time(userBookingRequest.getTime())
                 .status(status.getName())
+                .message(booking.getMessage())
                 .build();
 
         return new ResponseEntity<>(userBookingResponse, HttpStatus.OK);    }
+
+
 
     public ResponseEntity<List<UserBookingResponse>> allBooking(String email) {
         Optional<Users> optionalUser = Optional.ofNullable(usersRepo.findByEmail(email));
@@ -186,7 +199,10 @@ public class UsersService {
                         .time(booking.getExpectedTime())
                         .status(status.getName())
                         .build();
-                userBookingResponses.add(userBookingResponse);
+                if(id==booking.getBookerId()){
+                    userBookingResponses.add(userBookingResponse);
+                }
+
             }
             return new ResponseEntity<>(userBookingResponses, HttpStatus.OK);
         } else {
@@ -224,6 +240,7 @@ public class UsersService {
                 .email(registerRequest.getEmail())
                 .role_id(roleid)
                 .status_id(1)
+                .creation_time(Timestamp.from(Instant.now()))
                 .build();
         user=usersRepo.save(user);
 
@@ -262,6 +279,12 @@ public class UsersService {
             }
         }
 
+        Contacts contact1=Contacts.builder()
+                .user_id(user.getUser_id())
+                .contact_number(registerRequest.getContact())
+                .build();
+        contactsRepo.save(contact1);
+
         if(("Technician").equals(registerRequest.getRole())){
             Technicians tech1= Technicians.builder()
                     .tech_id(user.getUser_id())
@@ -271,4 +294,8 @@ public class UsersService {
 
         return new ResponseEntity<>(registerRequest, HttpStatus.OK);
     }
+
+//    public Optional<Integer> getAddressIdByUserId(int userId) {
+//        return addressesRepo.findAddressIdByUserId(userId);
+//    }
 }

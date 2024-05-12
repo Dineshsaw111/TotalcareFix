@@ -36,6 +36,16 @@ public class TokenVerificationFilter extends GenericFilterBean {
             return;
         }
 
+        if (httpRequest.getRequestURI().equals("/cities/getAllUserCities") && httpRequest.getMethod().equals("GET")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (httpRequest.getRequestURI().equals("/register") && httpRequest.getMethod().equals("POST")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         // Extract the JWT token from the Authorization header
         String token = extractToken(httpRequest.getHeader("Authorization"));
         System.out.println("Token:- "+token);

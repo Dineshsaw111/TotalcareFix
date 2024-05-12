@@ -25,13 +25,15 @@ public class UserController {
     @PostMapping("/userbooking")
     public ResponseEntity<UserBookingResponse> userBooking(@RequestBody UserBookingRequest userBookingRequest){
         //if(userBookingRequest.getMessage().isEmpty() && userBookingRequest.getEmail().isEmpty())
+        System.out.println();
         return usersService.techBooking(userBookingRequest);
     }
 
     @GetMapping("/showbooking/{email}")
-    public ResponseEntity<List<UserBookingResponse>> showBooking(@RequestParam String email){
+    public ResponseEntity<List<UserBookingResponse>> showBooking(@PathVariable String email) {
         return usersService.allBooking(email);
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<RegisterRequest> register(@RequestBody RegisterRequest registerRequest){
