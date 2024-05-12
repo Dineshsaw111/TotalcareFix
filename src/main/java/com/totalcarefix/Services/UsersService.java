@@ -1,15 +1,21 @@
 package com.totalcarefix.Services;
 
 import com.totalcarefix.DTO.NewRequestUser;
+import com.totalcarefix.DTO.RegisterRequest;
+import com.totalcarefix.DTO.UserBookingRequest;
+import com.totalcarefix.DTO.UserBookingResponse;
 import com.totalcarefix.Entities.*;
 import com.totalcarefix.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsersService {
@@ -27,6 +33,12 @@ public class UsersService {
     private SkillsRepo skillsRepo;
     @Autowired
     private TechniciansRepo techniciansRepo;
+
+    @Autowired
+    private StatusRepo statusRepo;
+
+    @Autowired
+    private  BookingRepo bookingRepo;
     public String addUser(NewRequestUser newRequestUser){
         System.out.println(newRequestUser.getSkill_name());
         if(newRequestUser.getStreet().isEmpty()||newRequestUser.getLast_name().isEmpty()
@@ -126,10 +138,120 @@ public class UsersService {
                 techniciansRepo.save(tech1);
                 System.out.println("hi2");
             }
-
             return "added";
-
         }
     }
 
+    //client
+
+    public ResponseEntity<UserBookingResponse> techBooking(UserBookingRequest userBookingRequest){
+        Optional<Users> optionalUsers = Optional.ofNullable(usersRepo.findByEmail(userBookingRequest.getEmail()));
+        Users users = optionalUsers.orElse(null);
+
+        Booking booking=Booking.builder()
+                .bookingId(users.getUser_id())
+                .statusId(1)
+                .message(userBookingRequest.getMessage())
+                .serviceDate(userBookingRequest.getServiceDate())
+                .expectedTime(userBookingRequest.getTime())
+                .build();
+       booking= bookingRepo.save(booking);
+
+        Status status=statusRepo.findById(1).get();
+        UserBookingResponse userBookingResponse=UserBookingResponse.builder()
+                .BookingId(booking.getBookingId())
+                .date(userBookingRequest.getServiceDate())
+                .time(userBookingRequest.getTime())
+                .status(status.getName())
+                .build();
+
+        return new ResponseEntity<>(userBookingResponse, HttpStatus.OK);    }
+
+    public ResponseEntity<List<UserBookingResponse>> allBooking(String email) {
+        Optional<Users> optionalUser = Optional.ofNullable(usersRepo.findByEmail(email));
+        Users user = optionalUser.orElse(null);
+        int id=user.getUser_id();
+        List<Booking> bookingList=new ArrayList<>();
+        bookingRepo.findAll().forEach(bookingList::add);
+
+        List<UserBookingResponse> userBookingResponses = new ArrayList<>();
+
+        if (!bookingList.isEmpty()) {
+            for (Booking booking : bookingList){
+               Status status= statusRepo.findById(booking.getStatusId()).get();
+                UserBookingResponse userBookingResponse=UserBookingResponse.builder()
+                        .BookingId(booking.getBookingId())
+                        .message(booking.getMessage())
+                        .date(booking.getServiceDate())
+                        .time(booking.getExpectedTime())
+                        .status(status.getName())
+                        .build();
+                userBookingResponses.add(userBookingResponse);
+            }
+            return new ResponseEntity<>(userBookingResponses, HttpStatus.OK);
+        } else {
+         //   Users users1=new Users("mesaage"+email,"not found");
+            return new ResponseEntity<>(userBookingResponses, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public ResponseEntity<RegisterRequest> registerUser(RegisterRequest registerRequest) {
+       String name=registerRequest.getName();
+        String[] parts = name.split(" ");
+        String firstName=null ;
+        String lastName=null ;
+
+        // Check if the string has been split into two parts
+        if (parts.length == 2) {
+            firstName = parts[0];
+             lastName = parts[1];
+
+        } else {
+            System.out.println("Invalid format: String does not contain two parts");
+        }
+       // rolesRepo1 find role ny role_id
+        int roleid=0;
+        List<roles> Allroles=new ArrayList<>();
+        rolesRepo1.findAll().forEach(Allroles::add);
+        for(roles role1:Allroles){
+            if(role1.getName().equals(registerRequest.getRole())){
+                roleid=role1.getRole_id();
+            }
+        }
+        Users user=Users.builder()
+                .first_name(firstName)
+                .last_name(lastName)
+                .email(registerRequest.getEmail())
+                .role_id(roleid)
+                .status_id(1)
+                .build();
+        user=usersRepo.save(user);
+
+        Contacts contact=Contacts.builder()
+                .contact_number(registerRequest.getContact())
+                .user_id(user.getUser_id())
+                .build();
+
+        int cityid=0;
+        List<Cities> citylist=new ArrayList<>();
+        citiesRepo.findAll().forEach(citylist::add);
+        for (Cities obj :citylist){
+            if(obj.getName().equals(registerRequest.getCity())){
+                cityid=obj.getCity_id();
+            }
+        }
+
+        Addresses address=Addresses.builder()
+                .user_id(user.getUser_id())
+                .house_number(registerRequest.getHouseNo())
+                .street(registerRequest.getStreet())
+                .society(registerRequest.getSociety())
+                .locality(registerRequest.getLocality())
+                .pincode(registerRequest.getPincode())
+                .city_id(cityid)
+                .address_type("fixed")
+                .build();
+        addressesRepo.save(address);
+        return new ResponseEntity<>(registerRequest, HttpStatus.OK);
+    }
 }
