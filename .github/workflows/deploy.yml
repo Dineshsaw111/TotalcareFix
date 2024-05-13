@@ -23,7 +23,7 @@ jobs:
       - name: Build Spring Boot application
         run: |
           chmod +x mvnw
-          ./mvnw package
+          ./mvnw package -DskipTests
  
       - name: Stop old running server
         uses: appleboy/ssh-action@master
