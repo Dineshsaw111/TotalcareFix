@@ -37,10 +37,10 @@ public class TokenVerificationFilter extends GenericFilterBean {
         }
 
         // Allow requests to public endpoints to bypass token verification
-//        if (isPublicEndpoint(httpRequest)) {
-//            chain.doFilter(request, response);
-//            return;
-//        }
+        if (isPublicEndpoint(httpRequest)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         // Extract the JWT token from the Authorization header
         String token = extractToken(httpRequest.getHeader("Authorization"));
@@ -63,14 +63,15 @@ public class TokenVerificationFilter extends GenericFilterBean {
         }
     }
 
-//    private boolean isPublicEndpoint(HttpServletRequest httpRequest) {
-//        String uri = httpRequest.getRequestURI();
-//        String method = httpRequest.getMethod();
-//        return ("/login/auth".equals(uri) && "POST".equals(method)) ||
-//                ("/cities/getAllUserCities".equals(uri) && "GET".equals(method)) ||
-//                ("/register".equals(uri) && "POST".equals(method)) ||
-//                ("/verify".equals(uri) && "GET".equals(method));
-//    }
+    private boolean isPublicEndpoint(HttpServletRequest httpRequest) {
+        String uri = httpRequest.getRequestURI();
+        String method = httpRequest.getMethod();
+        return ("/login/auth".equals(uri) && "POST".equals(method)) ||
+                ("/cities/getAllUserCities".equals(uri) && "GET".equals(method)) ||
+                ("/skills/getAllUserStatus".equals(uri) && "GET".equals(method)) ||
+                ("/register".equals(uri) && "POST".equals(method)) ||
+                ("/verify".equals(uri) && "GET".equals(method));
+    }
 
     private String extractToken(String header) {
         if (header != null && header.startsWith("Bearer ")) {

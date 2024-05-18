@@ -19,7 +19,6 @@ public class FilterConfig {
 
         registrationBean.setFilter(filter);
         registrationBean.addUrlPatterns("/*");
-//        registrationBean.addUrlPatterns("/cities/getAllUserCities");
         registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 
         return registrationBean;
