@@ -66,11 +66,9 @@ public class TokenVerificationFilter extends GenericFilterBean {
     private boolean isPublicEndpoint(HttpServletRequest httpRequest) {
         String uri = httpRequest.getRequestURI();
         String method = httpRequest.getMethod();
-        return ("/login/auth".equals(uri) && "POST".equals(method)) ||
-                ("/cities/getAllUserCities".equals(uri) && "GET".equals(method)) ||
+        return  ("/cities/getAllUserCities".equals(uri) && "GET".equals(method)) ||
                 ("/skills/getAllUserStatus".equals(uri) && "GET".equals(method)) ||
-                ("/register".equals(uri) && "POST".equals(method)) ||
-                ("/verify".equals(uri) && "GET".equals(method));
+                ("/register".equals(uri) && "POST".equals(method));
     }
 
     private String extractToken(String header) {
