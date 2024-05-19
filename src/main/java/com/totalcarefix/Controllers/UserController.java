@@ -4,6 +4,7 @@ import com.totalcarefix.DTO.FeedbackRequest;
 import com.totalcarefix.DTO.RegisterRequest;
 import com.totalcarefix.DTO.UserBookingRequest;
 import com.totalcarefix.DTO.UserBookingResponse;
+import com.totalcarefix.Entities.Booking;
 import com.totalcarefix.Entities.Feedback;
 import com.totalcarefix.Entities.Users;
 import com.totalcarefix.Services.UsersService;
@@ -47,6 +48,12 @@ public class UserController {
         return usersService.cancelBook(bookId);
     }
 
+    @PostMapping("/editbooking/{bookId}")
+    public ResponseEntity<Booking> editBooking(@PathVariable int bookId, @RequestBody UserBookingRequest userBookingRequest){
+        //if(userBookingRequest.getMessage().isEmpty() && userBookingRequest.getEmail().isEmpty())
+        System.out.println("for edit");
+        return usersService.editMyBooking(bookId,userBookingRequest);
+    }
     @PostMapping("/feedbacks")
     public  ResponseEntity<Feedback>feedback(@RequestBody FeedbackRequest feedbackRequest){
         return usersService.giveFeedback(feedbackRequest);

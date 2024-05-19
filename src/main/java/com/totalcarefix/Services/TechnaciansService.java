@@ -62,7 +62,7 @@ public class TechnaciansService {
 
                 String name = myUser.getFirst_name() + myUser.getLast_name();
 
-                Optional<Contacts> optionalContact = contactsRepo.findById(booking.getBookerId());
+                Optional<Contacts> optionalContact = Optional.ofNullable(contactsRepo.findByUserId(booking.getBookerId()));
                 Contacts contact = optionalContact.get();
 
                 Optional<Cities> optionalCity = citiesRepo.findById(address.getCity_id());
@@ -104,10 +104,13 @@ public class TechnaciansService {
         Optional<Users> optionalUsers = Optional.ofNullable(usersRepo.findByEmail(email));
         Users user = optionalUsers.orElse(null);
         Booking booking=bookingRepo.findById(id).get();
-        booking.setTechId(user.getUser_id());
-        booking.setStatusId(2);
-        Booking booking1=bookingRepo.save(booking);
-        return  new ResponseEntity<>(booking1,HttpStatus.OK);
+        if(booking.getStatusId()==1) {
+            booking.setTechId(user.getUser_id());
+            booking.setStatusId(2);
+             booking = bookingRepo.save(booking);
+        }
+            return new ResponseEntity<>(booking, HttpStatus.OK);
+
     }
 
     public ResponseEntity<List<ServiceResponse>> getMyOrders(String email) {

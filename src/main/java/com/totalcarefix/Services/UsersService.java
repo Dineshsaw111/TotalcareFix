@@ -113,7 +113,7 @@ public class UsersService {
             addressesRepo.save(address1);
 
             Contacts contact1=Contacts.builder()
-                    .user_id(userid)
+                    .userId(userid)
                     .contact_number(newRequestUser.getContact_number())
                     .build();
             contactsRepo.save(contact1);
@@ -253,7 +253,7 @@ public class UsersService {
 
         Contacts contact=Contacts.builder()
                 .contact_number(registerRequest.getContact())
-                .user_id(user.getUser_id())
+                .userId(user.getUser_id())
                 .build();
 
         int cityid=0;
@@ -287,7 +287,7 @@ public class UsersService {
         }
 
         Contacts contact1=Contacts.builder()
-                .user_id(user.getUser_id())
+                .userId(user.getUser_id())
                 .contact_number(registerRequest.getContact())
                 .build();
         contactsRepo.save(contact1);
@@ -326,5 +326,17 @@ public class UsersService {
         feedback=feedbacksRepo.save(feedback);
 
      return  new ResponseEntity<>(feedback,HttpStatus.OK);
+    }
+
+    public ResponseEntity<Booking> editMyBooking(int bookingId,UserBookingRequest userBookingRequest) {
+            Booking booking=bookingRepo.findById(bookingId).get();
+          Skills skill= skillsRepo.findByName(userBookingRequest.getSkill());
+          booking.setSkillId(skill.getSkill_id());
+          booking.setMessage(userBookingRequest.getMessage());
+          booking.setServiceDate(userBookingRequest.getServiceDate());
+          booking.setExpectedTime(userBookingRequest.getTime());
+
+         booking= bookingRepo.save(booking);
+            return new ResponseEntity<>(booking,HttpStatus.OK);
     }
 }
