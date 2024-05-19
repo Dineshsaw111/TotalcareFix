@@ -313,14 +313,13 @@ public class UsersService {
     }
 
     public ResponseEntity<Feedback> giveFeedback(FeedbackRequest feedbackRequest) {
-        Users user=usersRepo.findByEmail(feedbackRequest.getUserEmail());
-        Users tech=usersRepo.findByEmail(feedbackRequest.getTechEmail());
+       Booking booking=bookingRepo.findById(feedbackRequest.getBookingId()).get();
 
 
         Feedback feedback= Feedback.builder()
                 .bookingId(feedbackRequest.getBookingId())
-                .user_id(user.getUser_id())
-                .techId(tech.getUser_id())
+                .user_id(booking.getBookerId())
+                .techId(booking.getTechId())
 //                .tech_id(user.getUser_id())
                 .message(feedbackRequest.getMessage())
                 .rating(feedbackRequest.getRating())
