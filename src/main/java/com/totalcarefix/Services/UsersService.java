@@ -339,4 +339,12 @@ public class UsersService {
          booking= bookingRepo.save(booking);
             return new ResponseEntity<>(booking,HttpStatus.OK);
     }
+
+    public ResponseEntity<Booking> completed(int bookingId) {
+        Booking booking=bookingRepo.findById(bookingId).get();
+        booking.setStatusId(4);
+
+        booking=bookingRepo.save(booking);
+        return new ResponseEntity<>(booking,HttpStatus.OK);
+    }
 }

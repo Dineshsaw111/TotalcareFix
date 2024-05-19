@@ -37,6 +37,8 @@ public class TechnicianController {
     public  ResponseEntity<Double> rating(@PathVariable String email){
         return technaciansService.techRating(email);
     }
-//    @GetMapping("/todaycompleted/{email}")
-//    public ResponseEntity<>
+    @GetMapping("/taskcompleted/{email}")
+    public ResponseEntity<Integer> taskCompleted(@PathVariable String email){
+        return technaciansService.myTasked(email);
+    }
 }

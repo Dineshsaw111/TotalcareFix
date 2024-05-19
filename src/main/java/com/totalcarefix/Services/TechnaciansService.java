@@ -178,4 +178,20 @@ public class TechnaciansService {
         }
         return  new ResponseEntity<>(rating,HttpStatus.OK);
     }
+    public ResponseEntity<Integer> myTasked(String email) {
+        Optional<Users> optionalUser = Optional.ofNullable(usersRepo.findByEmail(email));
+        Users user = optionalUser.orElse(null);
+
+        List<Booking> bookingList=bookingRepo.findAllByTechId(user.getUser_id());
+
+     //   List<Booking> myList=new ArrayList<>();
+        int tasked=0;
+        for(Booking booking:bookingList){
+            if(booking.getStatusId()==4){
+                tasked=tasked+1;
+            }
+        }
+        return new ResponseEntity<>(tasked,HttpStatus.OK);
+
+    }
 }

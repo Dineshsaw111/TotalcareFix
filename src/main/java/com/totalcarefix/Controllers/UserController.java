@@ -58,4 +58,8 @@ public class UserController {
     public  ResponseEntity<Feedback>feedback(@RequestBody FeedbackRequest feedbackRequest){
         return usersService.giveFeedback(feedbackRequest);
     }
+    @PostMapping("/bookingcompleted/{bookingId}")
+    public ResponseEntity<Booking> bookingCompleted(@PathVariable int bookingId){
+        return  usersService.completed(bookingId);
+    }
 }
