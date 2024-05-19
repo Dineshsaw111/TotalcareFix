@@ -1,9 +1,6 @@
 package com.totalcarefix.Services;
 
-import com.totalcarefix.DTO.NewRequestUser;
-import com.totalcarefix.DTO.RegisterRequest;
-import com.totalcarefix.DTO.UserBookingRequest;
-import com.totalcarefix.DTO.UserBookingResponse;
+import com.totalcarefix.DTO.*;
 import com.totalcarefix.Entities.*;
 import com.totalcarefix.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,9 @@ public class UsersService {
 
     @Autowired
     private  BookingRepo bookingRepo;
+
+    @Autowired
+    private FeedbacksRepo feedbacksRepo;
     public String addUser(NewRequestUser newRequestUser){
         System.out.println(newRequestUser.getSkill_name());
         if(newRequestUser.getStreet().isEmpty()||newRequestUser.getLast_name().isEmpty()
@@ -156,9 +156,12 @@ public class UsersService {
             }
         }
 
+        Skills skill=skillsRepo.findByName(userBookingRequest.getSkill());
+
         Booking booking=Booking.builder()
                 .bookerId(users.getUser_id())
                 .statusId(1)
+                .skillId(skill.getSkill_id())
                 .message(userBookingRequest.getMessage())
                 .serviceDate(userBookingRequest.getServiceDate())
                 .expectedTime(userBookingRequest.getTime())
@@ -212,6 +215,10 @@ public class UsersService {
     }
 
     public ResponseEntity<RegisterRequest> registerUser(RegisterRequest registerRequest) {
+//        Optional<Users> optionalUser = Optional.ofNullable(usersRepo.findByEmail(registerRequest.getEmail()));
+//        Users user = optionalUser.orElse(null);
+//        if(user!=null){
+
        String name=registerRequest.getName();
         String[] parts = name.split(" ");
         String firstName=null ;
@@ -301,5 +308,23 @@ public class UsersService {
         booking.setStatusId(3);
         bookingRepo.save(booking);
         return new ResponseEntity<>("updated",HttpStatus.OK);
+    }
+
+    public ResponseEntity<Feedback> giveFeedback(FeedbackRequest feedbackRequest) {
+        Users user=usersRepo.findByEmail(feedbackRequest.getUserEmail());
+        Users tech=usersRepo.findByEmail(feedbackRequest.getTechEmail());
+
+        Feedback feedback= Feedback.builder()
+                .bookingId(feedbackRequest.getBookingId())
+                .user_id(user.getUser_id())
+                .techId(user.getUser_id())
+//                .tech_id(user.getUser_id())
+                .message(feedbackRequest.getMessage())
+                .rating(feedbackRequest.getRating())
+                .creation_time(Timestamp.from(Instant.now()))
+                .build();
+        feedback=feedbacksRepo.save(feedback);
+
+     return  new ResponseEntity<>(feedback,HttpStatus.OK);
     }
 }
