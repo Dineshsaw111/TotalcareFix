@@ -1,9 +1,6 @@
 package com.totalcarefix.Controllers;
 
-import com.totalcarefix.DTO.FeedbackRequest;
-import com.totalcarefix.DTO.RegisterRequest;
-import com.totalcarefix.DTO.UserBookingRequest;
-import com.totalcarefix.DTO.UserBookingResponse;
+import com.totalcarefix.DTO.*;
 import com.totalcarefix.Entities.Booking;
 import com.totalcarefix.Entities.Feedback;
 import com.totalcarefix.Entities.Users;
@@ -49,10 +46,10 @@ public class UserController {
     }
 
     @PostMapping("/editbooking/{bookId}")
-    public ResponseEntity<Booking> editBooking(@PathVariable int bookId, @RequestBody UserBookingRequest userBookingRequest){
+    public ResponseEntity<Booking> editBooking(@PathVariable int bookId, @RequestBody UpdateBookingRequest updateBookingRequest){
         //if(userBookingRequest.getMessage().isEmpty() && userBookingRequest.getEmail().isEmpty())
         System.out.println("for edit");
-        return usersService.editMyBooking(bookId,userBookingRequest);
+        return usersService.editMyBooking(bookId,updateBookingRequest);
     }
     @PostMapping("/feedbacks")
     public  ResponseEntity<Feedback>feedback(@RequestBody FeedbackRequest feedbackRequest){

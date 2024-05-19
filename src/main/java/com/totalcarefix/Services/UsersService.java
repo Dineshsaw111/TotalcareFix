@@ -331,13 +331,13 @@ public class UsersService {
      return  new ResponseEntity<>(feedback,HttpStatus.OK);
     }
 
-    public ResponseEntity<Booking> editMyBooking(int bookingId,UserBookingRequest userBookingRequest) {
+    public ResponseEntity<Booking> editMyBooking(int bookingId,UpdateBookingRequest updateBookingRequest) {
             Booking booking=bookingRepo.findById(bookingId).get();
-          Skills skill= skillsRepo.findByName(userBookingRequest.getSkill());
-          booking.setSkillId(skill.getSkill_id());
-          booking.setMessage(userBookingRequest.getMessage());
-          booking.setServiceDate(userBookingRequest.getServiceDate());
-          booking.setExpectedTime(userBookingRequest.getTime());
+//          Skills skill= skillsRepo.findByName(userBookingRequest.getSkill());
+//          booking.setSkillId(skill.getSkill_id());
+          booking.setMessage(updateBookingRequest.getMessage());
+          booking.setServiceDate(updateBookingRequest.getServiceDate());
+          booking.setExpectedTime(updateBookingRequest.getTime());
 
          booking= bookingRepo.save(booking);
             return new ResponseEntity<>(booking,HttpStatus.OK);
