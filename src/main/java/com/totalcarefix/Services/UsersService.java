@@ -202,8 +202,10 @@ public class UsersService {
                         .time(booking.getExpectedTime())
                         .status(status.getName())
                         .build();
-                if(id==booking.getBookerId() && booking.getStatusId()!=3){
-                    userBookingResponses.add(userBookingResponse);
+                if(id==booking.getBookerId()){
+                 //   if(id==booking.getBookerId() && booking.getStatusId()!=3){
+
+                        userBookingResponses.add(userBookingResponse);
                 }
 
             }
@@ -314,10 +316,11 @@ public class UsersService {
         Users user=usersRepo.findByEmail(feedbackRequest.getUserEmail());
         Users tech=usersRepo.findByEmail(feedbackRequest.getTechEmail());
 
+
         Feedback feedback= Feedback.builder()
                 .bookingId(feedbackRequest.getBookingId())
                 .user_id(user.getUser_id())
-                .techId(user.getUser_id())
+                .techId(tech.getUser_id())
 //                .tech_id(user.getUser_id())
                 .message(feedbackRequest.getMessage())
                 .rating(feedbackRequest.getRating())
