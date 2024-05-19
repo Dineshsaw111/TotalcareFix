@@ -122,7 +122,7 @@ public class TechnaciansService {
         List<ServiceResponse> serviceResponseList=new ArrayList<>();
         for (Booking booking:bookingList){
             if(booking.getStatusId()==2) {
-                Contacts contact = contactsRepo.findById(booking.getBookerId()).get();
+                Contacts contact = contactsRepo.findByUserId(booking.getBookerId());
                 Addresses address = addressesRepo.findById(booking.getAddressId()).get();
                 Users users = usersRepo.findById(booking.getBookerId()).get();
                 String name = users.getFirst_name() + users.getLast_name();
