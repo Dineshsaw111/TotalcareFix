@@ -1,37 +1,51 @@
 package com.totalcarefix.Controllers;
 
-import io.jsonwebtoken.Claims;
+import com.totalcarefix.DTO.LoginDto;
+import com.totalcarefix.Services.LoginService;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/verify")
 public class VerifyTokenController {
 
-    private static final String SECRET_KEY = "5R@hP2A+gQkzXK9vS4M*E7jWdGdF5aJd"; // Change this to your actual secret key
+    @Autowired
+    private LoginService loginService;
+    private final JwtDecoder jwtDecoder;
 
-    @GetMapping
-    public ResponseEntity<String> verifyToken(@RequestHeader("Authorization") String token) {
-        try {
-            // Remove "Bearer " prefix from the token
-            String jwtToken = token.substring(7);
+    public VerifyTokenController(JwtDecoder jwtDecoder) {
+        this.jwtDecoder = jwtDecoder;
+    }
 
-            // Parse and verify the token
-            Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwtToken).getBody();
+    @GetMapping("/verify")
+    public ResponseEntity<Map<String, String>> verifyToken(@RequestHeader("Authorization") String token) {
 
-            // Extract the subject from the token
-            String email = claims.getSubject();
+        String jwtToken = token.substring(7);
 
-            // Token is valid, return the email
-            return ResponseEntity.ok("Token is valid for email: " + email);
-        } catch (Exception e) {
-            // Token verification failed
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-        }
+        // Parse and verify the token
+        Jwt decodedJwt = jwtDecoder.decode(jwtToken);
+
+        // Extract the email from the token claims
+        Map<String, Object> claims = decodedJwt.getClaims();
+        String email = (String) claims.get("email");
+
+        LoginDto loginDto= loginService.getToken(email);
+
+                    // Create a response object containing the token
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            response.put("email",loginDto.getEmail());
+            response.put("role",loginDto.getRole());
+            return new ResponseEntity<>(response,HttpStatus.OK);
+
     }
 }

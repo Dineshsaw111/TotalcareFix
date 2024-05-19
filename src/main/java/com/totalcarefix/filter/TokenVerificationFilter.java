@@ -1,7 +1,5 @@
-package com.totalcarefix.filer;//package com.totalcarefix.filer;
+package com.totalcarefix.filter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -9,12 +7,20 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.filter.GenericFilterBean;
+
 import java.io.IOException;
 
 public class TokenVerificationFilter extends GenericFilterBean {
 
-    private static final String SECRET_KEY = "5R@hP2A+gQkzXK9vS4M*E7jWdGdF5aJd"; // Change this to your actual secret key
+    private JwtDecoder jwtDecoder;
+
+    public void setJwtDecoder(JwtDecoder jwtDecoder) {
+        this.jwtDecoder = jwtDecoder;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -30,48 +36,39 @@ public class TokenVerificationFilter extends GenericFilterBean {
             return;
         }
 
-        // Allow requests to the /login/auth endpoint to bypass token verification
-        if (httpRequest.getRequestURI().equals("/login/auth") && httpRequest.getMethod().equals("POST")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        if (httpRequest.getRequestURI().equals("/cities/getAllUserCities") && httpRequest.getMethod().equals("GET")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        if (httpRequest.getRequestURI().equals("/register") && httpRequest.getMethod().equals("POST")) {
+        // Allow requests to public endpoints to bypass token verification
+        if (isPublicEndpoint(httpRequest)) {
             chain.doFilter(request, response);
             return;
         }
 
         // Extract the JWT token from the Authorization header
         String token = extractToken(httpRequest.getHeader("Authorization"));
-        System.out.println("Token:- "+token);
         if (token != null) {
             try {
                 // Parse and verify the token
-                Claims claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
-
-                // Extract the subject (email) from the token
-                String email = claims.getSubject();
+                Jwt decodedJwt = jwtDecoder.decode(token);
 
                 // Proceed with the filter chain
                 chain.doFilter(request, response);
-
-            } catch (Exception e) {
+            } catch (JwtException e) {
                 // Token verification failed
                 httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                httpResponse.getWriter().write("Invalid token");
-                return;
+                httpResponse.getWriter().write("Invalid token: " + e.getMessage());
             }
         } else {
             // Token is missing
             httpResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpResponse.getWriter().write("Token is missing");
-            return;
         }
+    }
+
+    private boolean isPublicEndpoint(HttpServletRequest httpRequest) {
+        String uri = httpRequest.getRequestURI();
+        String method = httpRequest.getMethod();
+        return  ("/cities/getAllUserCities".equals(uri) && "GET".equals(method)) ||
+                ("/skills/getAllUserStatus".equals(uri) && "GET".equals(method)) ||
+                ("/register".equals(uri) && "POST".equals(method));
     }
 
     private String extractToken(String header) {
@@ -80,5 +77,4 @@ public class TokenVerificationFilter extends GenericFilterBean {
         }
         return null;
     }
-
 }

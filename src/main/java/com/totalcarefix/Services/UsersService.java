@@ -1,9 +1,6 @@
 package com.totalcarefix.Services;
 
-import com.totalcarefix.DTO.NewRequestUser;
-import com.totalcarefix.DTO.RegisterRequest;
-import com.totalcarefix.DTO.UserBookingRequest;
-import com.totalcarefix.DTO.UserBookingResponse;
+import com.totalcarefix.DTO.*;
 import com.totalcarefix.Entities.*;
 import com.totalcarefix.Repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,9 @@ public class UsersService {
 
     @Autowired
     private  BookingRepo bookingRepo;
+
+    @Autowired
+    private FeedbacksRepo feedbacksRepo;
     public String addUser(NewRequestUser newRequestUser){
         System.out.println(newRequestUser.getSkill_name());
         if(newRequestUser.getStreet().isEmpty()||newRequestUser.getLast_name().isEmpty()
@@ -113,7 +113,7 @@ public class UsersService {
             addressesRepo.save(address1);
 
             Contacts contact1=Contacts.builder()
-                    .user_id(userid)
+                    .userId(userid)
                     .contact_number(newRequestUser.getContact_number())
                     .build();
             contactsRepo.save(contact1);
@@ -156,9 +156,12 @@ public class UsersService {
             }
         }
 
+        Skills skill=skillsRepo.findByName(userBookingRequest.getSkill());
+
         Booking booking=Booking.builder()
                 .bookerId(users.getUser_id())
                 .statusId(1)
+                .skillId(skill.getSkill_id())
                 .message(userBookingRequest.getMessage())
                 .serviceDate(userBookingRequest.getServiceDate())
                 .expectedTime(userBookingRequest.getTime())
@@ -199,8 +202,10 @@ public class UsersService {
                         .time(booking.getExpectedTime())
                         .status(status.getName())
                         .build();
-                if(id==booking.getBookerId() && booking.getStatusId()!=3){
-                    userBookingResponses.add(userBookingResponse);
+                if(id==booking.getBookerId()){
+                 //   if(id==booking.getBookerId() && booking.getStatusId()!=3){
+
+                        userBookingResponses.add(userBookingResponse);
                 }
 
             }
@@ -212,6 +217,10 @@ public class UsersService {
     }
 
     public ResponseEntity<RegisterRequest> registerUser(RegisterRequest registerRequest) {
+//        Optional<Users> optionalUser = Optional.ofNullable(usersRepo.findByEmail(registerRequest.getEmail()));
+//        Users user = optionalUser.orElse(null);
+//        if(user!=null){
+
        String name=registerRequest.getName();
         String[] parts = name.split(" ");
         String firstName=null ;
@@ -246,7 +255,7 @@ public class UsersService {
 
         Contacts contact=Contacts.builder()
                 .contact_number(registerRequest.getContact())
-                .user_id(user.getUser_id())
+                .userId(user.getUser_id())
                 .build();
 
         int cityid=0;
@@ -280,7 +289,7 @@ public class UsersService {
         }
 
         Contacts contact1=Contacts.builder()
-                .user_id(user.getUser_id())
+                .userId(user.getUser_id())
                 .contact_number(registerRequest.getContact())
                 .build();
         contactsRepo.save(contact1);
@@ -301,5 +310,43 @@ public class UsersService {
         booking.setStatusId(3);
         bookingRepo.save(booking);
         return new ResponseEntity<>("updated",HttpStatus.OK);
+    }
+
+    public ResponseEntity<Feedback> giveFeedback(FeedbackRequest feedbackRequest) {
+       Booking booking=bookingRepo.findById(feedbackRequest.getBookingId()).get();
+
+
+        Feedback feedback= Feedback.builder()
+                .bookingId(feedbackRequest.getBookingId())
+                .user_id(booking.getBookerId())
+                .techId(booking.getTechId())
+//                .tech_id(user.getUser_id())
+                .message(feedbackRequest.getMessage())
+                .rating(feedbackRequest.getRating())
+                .creation_time(Timestamp.from(Instant.now()))
+                .build();
+        feedback=feedbacksRepo.save(feedback);
+
+     return  new ResponseEntity<>(feedback,HttpStatus.OK);
+    }
+
+    public ResponseEntity<Booking> editMyBooking(int bookingId,UpdateBookingRequest updateBookingRequest) {
+            Booking booking=bookingRepo.findById(bookingId).get();
+//          Skills skill= skillsRepo.findByName(userBookingRequest.getSkill());
+//          booking.setSkillId(skill.getSkill_id());
+          booking.setMessage(updateBookingRequest.getMessage());
+          booking.setServiceDate(updateBookingRequest.getServiceDate());
+          booking.setExpectedTime(updateBookingRequest.getTime());
+
+         booking= bookingRepo.save(booking);
+            return new ResponseEntity<>(booking,HttpStatus.OK);
+    }
+
+    public ResponseEntity<Booking> completed(int bookingId) {
+        Booking booking=bookingRepo.findById(bookingId).get();
+        booking.setStatusId(4);
+
+        booking=bookingRepo.save(booking);
+        return new ResponseEntity<>(booking,HttpStatus.OK);
     }
 }

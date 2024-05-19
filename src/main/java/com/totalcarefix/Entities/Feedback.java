@@ -17,11 +17,13 @@ public class Feedback {
 
     private int feedback_id;
 
+    @Column(name = "booking_id")
+    private  int bookingId;
 
     private int user_id;
 
-
-    private int tech_id;
+   @Column(name = "tech_id")
+    private int techId;
 
 
     private String message;

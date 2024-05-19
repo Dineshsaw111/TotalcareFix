@@ -26,6 +26,8 @@ public class Booking {
 
     private int addressId;
 
+    private int skillId;
+
     private String message;
 
     private Timestamp serviceDate;
