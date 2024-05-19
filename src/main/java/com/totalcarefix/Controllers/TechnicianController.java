@@ -22,12 +22,11 @@ public class TechnicianController {
     }
 
     @GetMapping("/confirm/{id}/{email}")
-    public ResponseEntity<Booking>confirmService(@PathVariable int id, String email){
+    public ResponseEntity<Booking>confirmService(@PathVariable int id, @PathVariable String email){
         return  technaciansService.serviceBooked(id,email);
     }
     @GetMapping("/myorder/{email}")
     public  ResponseEntity<List<ServiceResponse>>myOrder(@PathVariable String email){
-
         return technaciansService.getMyOrders(email);
     }
     @GetMapping("/cancel/{bookingId}")

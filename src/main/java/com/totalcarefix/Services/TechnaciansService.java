@@ -121,33 +121,35 @@ public class TechnaciansService {
 
         List<ServiceResponse> serviceResponseList=new ArrayList<>();
         for (Booking booking:bookingList){
-            Contacts contact=contactsRepo.findById(booking.getBookerId()).get();
-            Addresses address=addressesRepo.findById(booking.getAddressId()).get();
-            Users users=usersRepo.findById(booking.getBookerId()).get();
-            String name=users.getFirst_name()+users.getLast_name();
+            if(booking.getStatusId()==2) {
+                Contacts contact = contactsRepo.findById(booking.getBookerId()).get();
+                Addresses address = addressesRepo.findById(booking.getAddressId()).get();
+                Users users = usersRepo.findById(booking.getBookerId()).get();
+                String name = users.getFirst_name() + users.getLast_name();
 
-            Cities city=citiesRepo.findById(address.getCity_id()).get();
-            States state=statesRepo.findById(city.getState_id()).get();
+                Cities city = citiesRepo.findById(address.getCity_id()).get();
+                States state = statesRepo.findById(city.getState_id()).get();
 
-            AddressResponse addressResponse=AddressResponse.builder()
-                    .locality(address.getLocality())
-                    .city(city.getName())
-                    .state(state.getName())
-                    .society(address.getSociety())
-                    .street(address.getStreet())
-                    .houseNo(address.getHouse_number())
-                    .build();
+                AddressResponse addressResponse = AddressResponse.builder()
+                        .locality(address.getLocality())
+                        .city(city.getName())
+                        .state(state.getName())
+                        .society(address.getSociety())
+                        .street(address.getStreet())
+                        .houseNo(address.getHouse_number())
+                        .build();
 
-            ServiceResponse serviceResponse=ServiceResponse.builder()
-                    .name(name)
-                    .serviceDate(booking.getServiceDate())
-                    .expectedTime(booking.getExpectedTime())
-                    .message(booking.getMessage())
-                    .bookingId(booking.getBookingId())
-                    .mobileNumber(contact.getContact_number())
-                    .addressResponse(addressResponse)
-                    .build();
-            serviceResponseList.add(serviceResponse);
+                ServiceResponse serviceResponse = ServiceResponse.builder()
+                        .name(name)
+                        .serviceDate(booking.getServiceDate())
+                        .expectedTime(booking.getExpectedTime())
+                        .message(booking.getMessage())
+                        .bookingId(booking.getBookingId())
+                        .mobileNumber(contact.getContact_number())
+                        .addressResponse(addressResponse)
+                        .build();
+                serviceResponseList.add(serviceResponse);
+            }
         }
 
         return new ResponseEntity<>(serviceResponseList,HttpStatus.OK);
