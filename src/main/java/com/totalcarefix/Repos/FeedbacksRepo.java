@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface FeedbacksRepo extends JpaRepository<Feedback, Integer> {
    List<Feedback> findAllByTechId(int techId);
+   Feedback findByBookingId(int bookingId);
 }

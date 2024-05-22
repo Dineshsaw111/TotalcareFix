@@ -16,4 +16,5 @@ public class UserBookingResponse {
     private  String status;
     private Timestamp date;
     private Time time;
+    private  int feedbackId=0;
 }
