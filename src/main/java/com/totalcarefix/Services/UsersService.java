@@ -174,6 +174,7 @@ public class UsersService {
         UserBookingResponse userBookingResponse=UserBookingResponse.builder()
                 .BookingId(booking.getBookingId())
                 .date(userBookingRequest.getServiceDate())
+                .skill(userBookingRequest.getSkill())
                 .time(userBookingRequest.getTime())
                 .status(status.getName())
                 .message(booking.getMessage())
@@ -198,6 +199,8 @@ public class UsersService {
             for (Booking booking : bookingList){
                Status status= statusRepo.findById(booking.getStatusId()).get();
 
+               Skills skill=skillsRepo.findById(booking.getSkillId()).get();
+
                Optional<Feedback> feedbackOptional=Optional.ofNullable(feedbacksRepo.findByBookingId(booking.getBookingId()));
                if(feedbackOptional.isEmpty()){
                    feebackId=0;
@@ -209,6 +212,7 @@ public class UsersService {
                 UserBookingResponse userBookingResponse=UserBookingResponse.builder()
                         .BookingId(booking.getBookingId())
                         .message(booking.getMessage())
+                        .skill(skill.getName())
                         .date(booking.getServiceDate())
                         .time(booking.getExpectedTime())
                         .status(status.getName())

@@ -14,6 +14,7 @@ public class UserBookingResponse {
     private int BookingId;
     private String message;
     private  String status;
+    private  String skill;
     private Timestamp date;
     private Time time;
     private  int feedbackId=0;

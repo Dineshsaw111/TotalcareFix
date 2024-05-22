@@ -15,6 +15,7 @@ public class ServiceResponse {
     private String name;
     private String mobileNumber;
     private String message;
+   // private String skill;
     private Timestamp serviceDate;
     private Time expectedTime;
     private AddressResponse addressResponse;
