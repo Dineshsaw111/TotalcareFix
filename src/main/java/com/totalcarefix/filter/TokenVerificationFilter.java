@@ -68,6 +68,7 @@ public class TokenVerificationFilter extends GenericFilterBean {
         String method = httpRequest.getMethod();
         return  ("/cities/getAllUserCities".equals(uri) && "GET".equals(method)) ||
                 ("/skills/getAllUserStatus".equals(uri) && "GET".equals(method)) ||
+            //    ("/register".equals(uri) && "GET".equals(method)) ||
                 ("/register".equals(uri) && "POST".equals(method));
     }
 
