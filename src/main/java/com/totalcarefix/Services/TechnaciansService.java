@@ -157,7 +157,7 @@ public class TechnaciansService {
 
     public ResponseEntity<Booking> cancelOrder(int bookingId) {
         Booking booking=bookingRepo.findById(bookingId).get();
-        booking.setStatusId(3);
+        booking.setStatusId(1);
         Booking bookingResponse=bookingRepo.save(booking);
         return  new ResponseEntity<>(bookingResponse,HttpStatus.OK);
     }
