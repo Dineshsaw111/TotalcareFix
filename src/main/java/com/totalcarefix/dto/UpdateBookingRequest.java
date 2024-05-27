@@ -13,7 +13,6 @@ import java.sql.Timestamp;
 @Builder
 public class UpdateBookingRequest {
     private  String email;
- //   private  String skill;
     private Timestamp serviceDate;
     private Time time;
     private String message;
