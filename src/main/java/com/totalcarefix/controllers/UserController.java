@@ -4,6 +4,8 @@ import com.totalcarefix.dto.*;
 import com.totalcarefix.entities.Booking;
 import com.totalcarefix.entities.Feedback;
 import com.totalcarefix.services.UsersService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ public class UserController {
     @Autowired
     private UsersService usersService;
 
+    private Logger log= LoggerFactory.getLogger(UserController.class);
+
     @PostMapping("/userbooking")
     public ResponseEntity<UserBookingResponse> userBooking(@RequestBody UserBookingRequest userBookingRequest) {
         return usersService.techBooking(userBookingRequest);
@@ -24,6 +28,7 @@ public class UserController {
 
     @GetMapping("/showbooking/{email}")
     public ResponseEntity<List<UserBookingResponse>> showBooking(@PathVariable String email) {
+        log.debug("log in to controller with email"+email);
         return usersService.allBooking(email);
     }
 

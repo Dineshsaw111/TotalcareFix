@@ -2,7 +2,10 @@ package com.totalcarefix.services;
 
 import com.totalcarefix.dto.*;
 import com.totalcarefix.entities.*;
+import com.totalcarefix.exception.*;
 import com.totalcarefix.repos.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +42,8 @@ public class UsersService {
 
     @Autowired
     private FeedbacksRepo feedbacksRepo;
+
+    private Logger log= LoggerFactory.getLogger(UsersService.class);
 
     public ResponseEntity<UserBookingResponse> techBooking(UserBookingRequest userBookingRequest){
         Optional<Users> optionalUsers = Optional.ofNullable(usersRepo.findByEmail(userBookingRequest.getEmail()));
@@ -82,49 +87,55 @@ public class UsersService {
 
 
     public ResponseEntity<List<UserBookingResponse>> allBooking(String email) {
+        log.debug("log in to users services");
         Optional<Users> optionalUser = Optional.ofNullable(usersRepo.findByEmail(email));
         Users user = optionalUser.orElse(null);
-        int id=user.getUser_id();
-        List<Booking> bookingList=new ArrayList<>();
-        bookingRepo.findAll().forEach(bookingList::add);
+        if(optionalUser.isEmpty()){
+            log.error("invalid email");
+            throw new InvalidEmailException("Invalid email");
+        }
+        else {
+            int id = user.getUser_id();
+            List<Booking> bookingList = new ArrayList<>();
+            bookingRepo.findAll().forEach(bookingList::add);
 
-        List<UserBookingResponse> userBookingResponses = new ArrayList<>();
+            List<UserBookingResponse> userBookingResponses = new ArrayList<>();
 
-        int feebackId=0;
-        if (!bookingList.isEmpty()) {
-            for (Booking booking : bookingList){
-               Status status= statusRepo.findById(booking.getStatusId()).get();
+            int feebackId = 0;
+            if (!bookingList.isEmpty()) {
+                for (Booking booking : bookingList) {
+                    Status status = statusRepo.findById(booking.getStatusId()).get();
 
-               Skills skill=skillsRepo.findById(booking.getSkillId()).get();
+                    Skills skill = skillsRepo.findById(booking.getSkillId()).get();
 
-               Optional<Feedback> feedbackOptional=Optional.ofNullable(feedbacksRepo.findByBookingId(booking.getBookingId()));
-               if(feedbackOptional.isEmpty()){
-                   feebackId=0;
-               }
-               else{
-                   feebackId=1;
-               }
+                    Optional<Feedback> feedbackOptional = Optional.ofNullable(feedbacksRepo.findByBookingId(booking.getBookingId()));
+                    if (feedbackOptional.isEmpty()) {
+                        feebackId = 0;
+                    } else {
+                        feebackId = 1;
+                    }
 
-                UserBookingResponse userBookingResponse=UserBookingResponse.builder()
-                        .BookingId(booking.getBookingId())
-                        .message(booking.getMessage())
-                        .skill(skill.getName())
-                        .date(booking.getServiceDate())
-                        .time(booking.getExpectedTime())
-                        .status(status.getName())
-                        .feedbackId(feebackId)
-                        .build();
-                if(id==booking.getBookerId()){
-                 //   if(id==booking.getBookerId() && booking.getStatusId()!=3){
+                    UserBookingResponse userBookingResponse = UserBookingResponse.builder()
+                            .BookingId(booking.getBookingId())
+                            .message(booking.getMessage())
+                            .skill(skill.getName())
+                            .date(booking.getServiceDate())
+                            .time(booking.getExpectedTime())
+                            .status(status.getName())
+                            .feedbackId(feebackId)
+                            .build();
+                    if (id == booking.getBookerId()) {
+                        //   if(id==booking.getBookerId() && booking.getStatusId()!=3){
 
                         userBookingResponses.add(userBookingResponse);
-                }
+                    }
 
+                }
+                return new ResponseEntity<>(userBookingResponses, HttpStatus.OK);
+            } else {
+                //   Users users1=new Users("mesaage"+email,"not found");
+                return new ResponseEntity<>(userBookingResponses, HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity<>(userBookingResponses, HttpStatus.OK);
-        } else {
-         //   Users users1=new Users("mesaage"+email,"not found");
-            return new ResponseEntity<>(userBookingResponses, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -205,7 +216,7 @@ public class UsersService {
 
             RegisterResponse registerResponse=RegisterResponse.builder()
                     .state(false)
-                    .message("not exist")
+                    .message("registered successfully")
                     .role("none")
                     .build();
 
@@ -218,18 +229,22 @@ public class UsersService {
             roles role=rolesRepo1.findById(users.getRole_id()).get();
             RegisterResponse registerResponse=RegisterResponse.builder()
                     .state(true)
-                    .message("exist")
+                    .message("already register")
                     .role(role.getName())
                     .build();
-            return new ResponseEntity<>(registerResponse, HttpStatus.ALREADY_REPORTED);
+            return new ResponseEntity<>(registerResponse, HttpStatus.CONFLICT);
         }
 
     }
     public ResponseEntity<String> cancelBook(int bookId) {
         Booking booking=bookingRepo.findById(bookId).get();
-        booking.setStatusId(3);
-        bookingRepo.save(booking);
-        return new ResponseEntity<>("updated",HttpStatus.OK);
+        if(booking.getStatusId()==1 || booking.getStatusId()==2) {
+            booking.setStatusId(3);
+            bookingRepo.save(booking);
+            return new ResponseEntity<>("updated", HttpStatus.OK);
+        }else {
+            throw new UserCancelException("this task cant be executed because status id is" +booking.getStatusId()+" means it is not in appointemnt and booked status");
+        }
     }
 
     public ResponseEntity<Feedback> giveFeedback(FeedbackRequest feedbackRequest) {
@@ -251,22 +266,53 @@ public class UsersService {
     }
 
     public ResponseEntity<Booking> editMyBooking(int bookingId,UpdateBookingRequest updateBookingRequest) {
-            Booking booking=bookingRepo.findById(bookingId).get();
+        log.debug("log in to edit booking");
+
+        Optional<Booking> optionalBooking = Optional.ofNullable((bookingRepo.findById(bookingId))).get();
+        log.debug("bookingId");
+            Booking booking=optionalBooking.orElse(null);
+            log.debug("bookingId");
+        if(optionalBooking.isPresent()) {
 //          Skills skill= skillsRepo.findByName(userBookingRequest.getSkill());
 //          booking.setSkillId(skill.getSkill_id());
-          booking.setMessage(updateBookingRequest.getMessage());
-          booking.setServiceDate(updateBookingRequest.getServiceDate());
-          booking.setExpectedTime(updateBookingRequest.getTime());
+            if(booking.getStatusId()==1) {
+                booking.setMessage(updateBookingRequest.getMessage());
+                booking.setServiceDate(updateBookingRequest.getServiceDate());
+                booking.setExpectedTime(updateBookingRequest.getTime());
 
-         booking= bookingRepo.save(booking);
-            return new ResponseEntity<>(booking,HttpStatus.OK);
+                booking = bookingRepo.save(booking);
+                return new ResponseEntity<>(booking, HttpStatus.OK);
+            }
+            else {
+                throw new NotEditableException("it has been proceed from appointment can not be edited");
+            }
+        }
+        else {
+            throw  new InvalidBookingId("this booking_id is not found");
+        }
     }
 
     public ResponseEntity<Booking> completed(int bookingId) {
-        Booking booking=bookingRepo.findById(bookingId).get();
-        booking.setStatusId(4);
+        log.debug("log in to edit booking");
 
-        booking=bookingRepo.save(booking);
-        return new ResponseEntity<>(booking,HttpStatus.OK);
+        Optional<Booking> optionalBooking = Optional.ofNullable((bookingRepo.findById(bookingId))).get();
+        log.debug("bookingId");
+        Booking booking=optionalBooking.orElse(null);
+        log.debug("bookingId");
+       // Booking booking=bookingRepo.findById(bookingId).get();
+
+        if(optionalBooking.isPresent()) {
+            if(booking.getStatusId()==2) {
+                booking.setStatusId(4);
+
+                booking = bookingRepo.save(booking);
+                return new ResponseEntity<>(booking, HttpStatus.OK);
+            }else {
+                throw  new CanNotCompleteStatus("can not do this task because it status is not booked ");
+            }
+        }
+                else {
+            throw  new InvalidBookingId("this booking_id is not found");
+        }
     }
 }
