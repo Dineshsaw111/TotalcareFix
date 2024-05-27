@@ -1,10 +1,7 @@
 package com.totalcarefix.Controllers;
 
-import com.totalcarefix.DTO.RequestSkills;
 import com.totalcarefix.DTO.RequestStates;
-import com.totalcarefix.Entities.Skills;
 import com.totalcarefix.Entities.States;
-import com.totalcarefix.Services.SkillsService;
 import com.totalcarefix.Services.StatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/States")
-public class StatesContoller {
+public class StatesController {
 
     @Autowired
     StatesService statesService;

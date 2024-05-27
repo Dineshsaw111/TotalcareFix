@@ -18,14 +18,8 @@ public class UserController {
     @Autowired
     private UsersService usersService;
 
-//    public ResponseEntity<Users> register(){
-//
-//        return
-//    }
     @PostMapping("/userbooking")
-    public ResponseEntity<UserBookingResponse> userBooking(@RequestBody UserBookingRequest userBookingRequest){
-        //if(userBookingRequest.getMessage().isEmpty() && userBookingRequest.getEmail().isEmpty())
-        System.out.println("booking controller");
+    public ResponseEntity<UserBookingResponse> userBooking(@RequestBody UserBookingRequest userBookingRequest) {
         return usersService.techBooking(userBookingRequest);
     }
 
@@ -36,27 +30,29 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest){
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest registerRequest) {
         return usersService.registerUser(registerRequest);
     }
 
     @PostMapping("/cancel/{bookId}")
-    public ResponseEntity<String> cancel(@PathVariable int bookId){
+    public ResponseEntity<String> cancel(@PathVariable int bookId) {
         return usersService.cancelBook(bookId);
     }
 
     @PostMapping("/editbooking/{bookId}")
-    public ResponseEntity<Booking> editBooking(@PathVariable int bookId, @RequestBody UpdateBookingRequest updateBookingRequest){
+    public ResponseEntity<Booking> editBooking(@PathVariable int bookId, @RequestBody UpdateBookingRequest updateBookingRequest) {
         //if(userBookingRequest.getMessage().isEmpty() && userBookingRequest.getEmail().isEmpty())
         System.out.println("for edit");
-        return usersService.editMyBooking(bookId,updateBookingRequest);
+        return usersService.editMyBooking(bookId, updateBookingRequest);
     }
+
     @PostMapping("/feedbacks")
-    public  ResponseEntity<Feedback>feedback(@RequestBody FeedbackRequest feedbackRequest){
+    public ResponseEntity<Feedback> feedback(@RequestBody FeedbackRequest feedbackRequest) {
         return usersService.giveFeedback(feedbackRequest);
     }
+
     @GetMapping("/bookingcompleted/{bookingId}")
-    public ResponseEntity<Booking> bookingCompleted(@PathVariable int bookingId){
-        return  usersService.completed(bookingId);
+    public ResponseEntity<Booking> bookingCompleted(@PathVariable int bookingId) {
+        return usersService.completed(bookingId);
     }
 }
