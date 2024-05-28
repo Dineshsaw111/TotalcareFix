@@ -125,10 +125,10 @@ public class TechnaciansService {
             if (optionalBooking.isEmpty()) {
                 throw new InvalidBookingId("this booking_id is not found");
             } else {
-                if(booking.getTechId()!=null){
-                    throw new InvalidBookingId("this booking_id is not found already booked");
-                }
-                else {
+//                if(booking.getTechId()!=null){
+//                    throw new InvalidBookingId("this booking_id is not found already booked");
+//                }
+//                else {
                     //   Booking booking=bookingRepo.findById(id).get();
                     if (booking.getStatusId() == 1) {
                         booking.setTechId(user.getUser_id());
@@ -136,7 +136,7 @@ public class TechnaciansService {
                         booking = bookingRepo.save(booking);
                     }
                     return new ResponseEntity<>(booking, HttpStatus.OK);
-                }
+            //    }
             }
         }
     }
