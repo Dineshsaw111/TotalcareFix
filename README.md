@@ -30,5 +30,5 @@
    #### •	Technicians perform the requested service on the scheduled date and time.
 
    ### 4.	Feedback and Rating:
-   #### •	After service completion, users can provide feedback and ratings for the technician's performance.
+   #### •	After service completion, users can provide feedback and ratings for the technicians performance.
   
